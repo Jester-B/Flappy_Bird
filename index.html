@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="img/favicon.jpg" type="image/x-icon">
     <title>Flappy Bird</title>
 
@@ -12,20 +12,19 @@
         body {
             margin: 0;
             padding: 0;
-            overflow: hidden;
             background: black;
             touch-action: none;
-            height: 100%;
-            width: 100%;
+            min-height: 100vh;
+        }
+
+        body {
+            overflow-y: auto;
         }
 
         #myCanvas {
             display: block;
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100vw;
-            height: 100vh;
+            height: auto;
         }
 
         #playBtn {
@@ -81,7 +80,7 @@
 </head>
 
 <body>
-    <canvas id="myCanvas" width="900" height="600"></canvas>
+    <canvas id="myCanvas" width="900" height="1500"></canvas>
     <button id="playBtn">Play</button>
 
     <script>
@@ -123,10 +122,9 @@
         };
 
         const alignBirdToPlayBtn = () => {
-            const canvasRect = canvas.getBoundingClientRect();
             const playBtnRect = playBtn.getBoundingClientRect();
-            const scrollY = window.scrollY || window.pageYOffset;
-            bird.y = playBtnRect.top + playBtnRect.height / 2 - canvasRect.top + scrollY - bird.height / 2;
+            const canvasTop = canvas.offsetTop;
+            bird.y = playBtnRect.top + window.scrollY + playBtnRect.height / 2 - canvasTop - bird.height / 2;
         };
 
         let pipes = [];
@@ -139,9 +137,8 @@
 
         const resizeCanvas = () => {
             const width = document.documentElement.clientWidth;
-            const height = document.documentElement.clientHeight;
             canvas.width = width;
-            canvas.height = height;
+            canvas.height = 1500; // Tall canvas for scrolling
             alignBirdToPlayBtn();
             if (imagesLoaded === totalImages) drawIdle();
         };
