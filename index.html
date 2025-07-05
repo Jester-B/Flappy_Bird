@@ -14,17 +14,16 @@
             padding: 0;
             background: black;
             touch-action: none;
-            min-height: 100vh;
-        }
-
-        body {
-            overflow-y: auto;
+            height: 100vh;
+            overflow: hidden;
         }
 
         #myCanvas {
             display: block;
-            width: 100vw;
-            height: auto;
+            width: 800px;
+            height: 500px;
+            max-width: 100%;
+            margin: 0 auto;
         }
 
         #playBtn {
@@ -32,8 +31,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px 50px;
-            font-size: 28px;
+            padding: 15px 40px;
+            font-size: 20px;
             font-family: 'Comic Sans MS', 'Fredoka One', cursive;
             font-weight: bold;
             background: linear-gradient(to bottom, #fdd835, #fbc02d);
@@ -80,11 +79,11 @@
 </head>
 
 <body>
-    <canvas id="myCanvas" width="900" height="1500"></canvas>
+    <canvas id="myCanvas" width="800" height="350"></canvas>
     <button id="playBtn">Play</button>
 
     <script>
-        const canvas = document.getElementById("myCanvas");
+         const canvas = document.getElementById("myCanvas");
         const ctx = canvas.getContext("2d");
         const playBtn = document.getElementById("playBtn");
 
@@ -106,19 +105,41 @@
         birdImage.onload = bgImg.onload = pipImg.onload = () => {
             imagesLoaded++;
             if (imagesLoaded === totalImages) {
-                resizeCanvas();
+                adjustCanvasSize();
                 drawIdle();
             }
         };
 
+        const adjustCanvasSize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+
+        window.addEventListener("resize", () => {
+            adjustCanvasSize();
+            alignBirdToPlayBtn();
+        });
+
+        window.addEventListener("orientationchange", () => setTimeout(() => {
+            adjustCanvasSize();
+            alignBirdToPlayBtn();
+        }, 300));
+
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                adjustCanvasSize();
+                window.scrollTo(0, 0);
+            }, 150);
+        });
+
         let bird = {
             x: 100,
-            y: 270,
-            width: 60,
-            height: 60,
+            y: 210,
+            width: 40,
+            height: 40,
             velocity: -1,
-            gravity: 0.5,
-            jumpforce: -8
+            gravity: 0.4,
+            jumpforce: -6
         };
 
         const alignBirdToPlayBtn = () => {
@@ -128,17 +149,16 @@
         };
 
         let pipes = [];
-        let pipeWidth = 80;
-        let pipeGap = 110;
+        let pipeWidth = 50;
+        let pipeGap = 90;
         let pipeSpeed = 2;
         let pipeSpacing = 160;
         let pipeInterval = 1200;
         let score = 0;
 
         const resizeCanvas = () => {
-            const width = document.documentElement.clientWidth;
-            canvas.width = width;
-            canvas.height = 1500; // Tall canvas for scrolling
+            canvas.width = 800;
+            canvas.height = 500;
             alignBirdToPlayBtn();
             if (imagesLoaded === totalImages) drawIdle();
         };
@@ -201,7 +221,7 @@
                 pipes.length === 0 ||
                 pipes[pipes.length - 1].x < canvas.width - pipeSpacing
             ) {
-                let topHeight = Math.floor(Math.random() * (canvas.height - pipeGap - 100)) + 100;
+                let topHeight = Math.floor(Math.random() * (canvas.height - pipeGap - 100)) + 50;
 
                 pipes.push({
                     x: canvas.width,
@@ -215,16 +235,16 @@
         let isGameOver = false;
         let isPlaying = false;
 
-        const pipeImageScale = 2.2;
+        const pipeImageScale = 1.8;
 
         function drawIdle() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
             ctx.drawImage(birdImage, bird.x, bird.y, bird.width, bird.height);
             ctx.fillStyle = "white";
-            ctx.font = "bold 30px Arial";
+            ctx.font = "bold 24px Arial";
             ctx.textAlign = "start";
-            ctx.fillText("Score: " + score, 30, 50);
+            ctx.fillText("Score: " + score, 20, 40);
             playBtn.style.display = "block";
         }
 
@@ -243,9 +263,9 @@
 
             if (!isGameOver) {
                 ctx.fillStyle = "white";
-                ctx.font = "bold 30px Arial";
+                ctx.font = "bold 24px Arial";
                 ctx.textAlign = "start";
-                ctx.fillText("Score: " + score, 30, 50);
+                ctx.fillText("Score: " + score, 20, 40);
             }
 
             if (!isPlaying) {
@@ -266,7 +286,7 @@
                 ctx.drawImage(pipImg, -imageWidth / 2, -pipe.topHeight / 2, imageWidth, pipe.topHeight);
                 ctx.restore();
 
-                const hitboxMargin = 21;
+                const hitboxMargin = 15;
                 const birdRight = bird.x + bird.width - hitboxMargin;
                 const birdLeft = bird.x + hitboxMargin;
                 const birdTop = bird.y + hitboxMargin;
@@ -274,7 +294,7 @@
 
                 const pipeLeft = pipe.x;
                 const pipeRight = pipe.x + pipeWidth;
-                const margin = 8;
+                const margin = 6;
 
                 if (
                     birdRight > pipeLeft &&
@@ -295,7 +315,7 @@
                     pipes.splice(i, 1);
                 }
 
-                if (!pipe.passed && bird.x > pipe.x + pipeWidth - 80) {
+                if (!pipe.passed && bird.x > pipe.x + pipeWidth - 50) {
                     score++;
                     pipe.passed = true;
                     pointSound.currentTime = 0;
@@ -304,9 +324,9 @@
             }
 
             ctx.fillStyle = "white";
-            ctx.font = "bold 30px Arial";
+            ctx.font = "bold 24px Arial";
             ctx.textAlign = "start";
-            ctx.fillText("Score: " + score, 30, 50);
+            ctx.fillText("Score: " + score, 20, 40);
 
             requestAnimationFrame(gameLoop);
         };
@@ -326,12 +346,12 @@
             ctx.fillStyle = "rgba(0,0,0,0.5)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "white";
-            ctx.font = "bold 60px Arial";
+            ctx.font = "bold 50px Arial";
             ctx.textAlign = "center";
             ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
-            ctx.font = "bold 30px Arial";
-            ctx.fillText("Your Score: " + score, canvas.width / 2, canvas.height / 2 + 60);
-            ctx.fillText("Press Space or Tap to restart", canvas.width / 2, canvas.height / 2 + 130);
+            ctx.font = "bold 24px Arial";
+            ctx.fillText("Your Score: " + score, canvas.width / 2, canvas.height / 2 + 50);
+            ctx.fillText("Press Space or Tap to restart", canvas.width / 2, canvas.height / 2 + 100);
         };
     </script>
 </body>
