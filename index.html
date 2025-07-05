@@ -172,6 +172,7 @@
                         reset();
                         isGameOver = false;
                         isPlaying = false;
+                        alignBirdToPlayBtn();
                         drawIdle();
                     } else if (isPlaying) {
                         bird.velocity = bird.jumpforce;
