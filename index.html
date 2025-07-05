@@ -172,7 +172,7 @@
                         reset();
                         isGameOver = false;
                         isPlaying = false;
-                        alignBirdToPlayBtn();
+                        alignBirdToPlayBtn(); // <-- Add this to fix the bird position
                         drawIdle();
                     } else if (isPlaying) {
                         bird.velocity = bird.jumpforce;
@@ -187,6 +187,7 @@
                     reset();
                     isGameOver = false;
                     isPlaying = false;
+                    alignBirdToPlayBtn(); // <-- Add this to fix the bird position
                     drawIdle();
                 } else if (isPlaying) {
                     bird.velocity = bird.jumpforce;
