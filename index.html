@@ -15,6 +15,7 @@
             overflow: hidden;
             background: black;
             touch-action: none;
+            height: 100%;
         }
 
         #myCanvas {
@@ -22,8 +23,6 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
         }
 
         #playBtn {
@@ -128,15 +127,22 @@
         let score = 0;
 
         const resizeCanvas = () => {
-            const width = window.visualViewport?.width || window.innerWidth;
-            const height = window.visualViewport?.height || window.innerHeight;
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            canvas.style.width = width + "px";
+            canvas.style.height = height + "px";
             canvas.width = width;
             canvas.height = height;
             if (imagesLoaded === totalImages) drawIdle();
         };
 
         window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                resizeCanvas();
+                window.scrollTo(0, 0);
+            }, 100);
+        });
 
         document.body.addEventListener("touchstart", (e) => {
             if (e.target.tagName !== "BUTTON") e.preventDefault();
