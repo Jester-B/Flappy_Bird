@@ -125,7 +125,8 @@
         const alignBirdToPlayBtn = () => {
             const canvasRect = canvas.getBoundingClientRect();
             const playBtnRect = playBtn.getBoundingClientRect();
-            bird.y = playBtnRect.top + playBtnRect.height / 2 - canvasRect.top - bird.height / 2;
+            const scrollY = window.scrollY || window.pageYOffset;
+            bird.y = playBtnRect.top + playBtnRect.height / 2 - canvasRect.top + scrollY - bird.height / 2;
         };
 
         let pipes = [];
@@ -172,7 +173,7 @@
                         reset();
                         isGameOver = false;
                         isPlaying = false;
-                        alignBirdToPlayBtn(); // <-- Add this to fix the bird position
+                        alignBirdToPlayBtn();
                         drawIdle();
                     } else if (isPlaying) {
                         bird.velocity = bird.jumpforce;
@@ -187,7 +188,7 @@
                     reset();
                     isGameOver = false;
                     isPlaying = false;
-                    alignBirdToPlayBtn(); // <-- Add this to fix the bird position
+                    alignBirdToPlayBtn();
                     drawIdle();
                 } else if (isPlaying) {
                     bird.velocity = bird.jumpforce;
