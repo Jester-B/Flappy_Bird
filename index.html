@@ -163,11 +163,18 @@
                 }
             });
 
-            canvas.addEventListener("touchstart", () => {
-                if (!isPlaying || isGameOver) return;
-                bird.velocity = bird.jumpforce;
-                flapSound.currentTime = 0;
-                flapSound.play();
+            // Touch-to-fly support for mobile
+            window.addEventListener("touchstart", () => {
+                if (isGameOver) {
+                    reset();
+                    isGameOver = false;
+                    isPlaying = false;
+                    drawIdle();
+                } else if (isPlaying) {
+                    bird.velocity = bird.jumpforce;
+                    flapSound.currentTime = 0;
+                    flapSound.play();
+                }
             });
         };
         keyPressed();
@@ -191,7 +198,7 @@
         let isGameOver = false;
         let isPlaying = false;
 
-        const pipeImageScale = 2.2; // Increased from 1.6 to 2.2
+        const pipeImageScale = 2.2;
 
         function drawIdle() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
