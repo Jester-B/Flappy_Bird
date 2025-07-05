@@ -107,6 +107,7 @@
         birdImage.onload = bgImg.onload = pipImg.onload = () => {
             imagesLoaded++;
             if (imagesLoaded === totalImages) {
+                resizeCanvas();
                 drawIdle();
             }
         };
@@ -119,6 +120,12 @@
             velocity: -1,
             gravity: 0.5,
             jumpforce: -8
+        };
+
+        const alignBirdToPlayBtn = () => {
+            const canvasRect = canvas.getBoundingClientRect();
+            const playBtnRect = playBtn.getBoundingClientRect();
+            bird.y = playBtnRect.top + playBtnRect.height / 2 - canvasRect.top - bird.height / 2;
         };
 
         let pipes = [];
@@ -134,6 +141,7 @@
             const height = document.documentElement.clientHeight;
             canvas.width = width;
             canvas.height = height;
+            alignBirdToPlayBtn();
             if (imagesLoaded === totalImages) drawIdle();
         };
 
@@ -304,7 +312,7 @@
         };
 
         const reset = () => {
-            bird.y = 270;
+            alignBirdToPlayBtn();
             bird.velocity = 0;
             pipes = [];
             score = 0;
