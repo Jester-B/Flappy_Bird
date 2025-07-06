@@ -18,12 +18,17 @@
             overflow: hidden;
         }
 
+        #gameWrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
         #myCanvas {
             display: block;
-            width: 800px;
-            height: 500px;
-            max-width: 100%;
-            margin: 0 auto;
+            width: 100vw;
+            height: 100vh;
         }
 
         #playBtn {
@@ -79,11 +84,13 @@
 </head>
 
 <body>
-    <canvas id="myCanvas" width="800" height="350"></canvas>
-    <button id="playBtn">Play</button>
+    <div id="gameWrapper">
+        <canvas id="myCanvas"></canvas>
+        <button id="playBtn">Play</button>
+    </div>
 
     <script>
-         const canvas = document.getElementById("myCanvas");
+        const canvas = document.getElementById("myCanvas");
         const ctx = canvas.getContext("2d");
         const playBtn = document.getElementById("playBtn");
 
@@ -105,32 +112,14 @@
         birdImage.onload = bgImg.onload = pipImg.onload = () => {
             imagesLoaded++;
             if (imagesLoaded === totalImages) {
-                adjustCanvasSize();
+                resizeCanvas();
                 drawIdle();
             }
         };
 
-        const adjustCanvasSize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        const alignBirdToPlayBtn = () => {
+            bird.y = canvas.height / 2 - bird.height / 2;
         };
-
-        window.addEventListener("resize", () => {
-            adjustCanvasSize();
-            alignBirdToPlayBtn();
-        });
-
-        window.addEventListener("orientationchange", () => setTimeout(() => {
-            adjustCanvasSize();
-            alignBirdToPlayBtn();
-        }, 300));
-
-        window.addEventListener("load", () => {
-            setTimeout(() => {
-                adjustCanvasSize();
-                window.scrollTo(0, 0);
-            }, 150);
-        });
 
         let bird = {
             x: 100,
@@ -142,12 +131,6 @@
             jumpforce: -6
         };
 
-        const alignBirdToPlayBtn = () => {
-            const playBtnRect = playBtn.getBoundingClientRect();
-            const canvasTop = canvas.offsetTop;
-            bird.y = playBtnRect.top + window.scrollY + playBtnRect.height / 2 - canvasTop - bird.height / 2;
-        };
-
         let pipes = [];
         let pipeWidth = 50;
         let pipeGap = 90;
@@ -155,22 +138,6 @@
         let pipeSpacing = 160;
         let pipeInterval = 1200;
         let score = 0;
-
-        const resizeCanvas = () => {
-            canvas.width = 800;
-            canvas.height = 500;
-            alignBirdToPlayBtn();
-            if (imagesLoaded === totalImages) drawIdle();
-        };
-
-        window.addEventListener("resize", resizeCanvas);
-        window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 300));
-        window.addEventListener("load", () => {
-            setTimeout(() => {
-                resizeCanvas();
-                window.scrollTo(0, 0);
-            }, 150);
-        });
 
         document.body.addEventListener("touchstart", (e) => {
             if (e.target.tagName !== "BUTTON") e.preventDefault();
@@ -236,6 +203,15 @@
         let isPlaying = false;
 
         const pipeImageScale = 1.8;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            alignBirdToPlayBtn();
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 300));
 
         function drawIdle() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -353,6 +329,13 @@
             ctx.fillText("Your Score: " + score, canvas.width / 2, canvas.height / 2 + 50);
             ctx.fillText("Press Space or Tap to restart", canvas.width / 2, canvas.height / 2 + 100);
         };
+
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                resizeCanvas();
+                window.scrollTo(0, 0);
+            }, 150);
+        });
     </script>
 </body>
 
