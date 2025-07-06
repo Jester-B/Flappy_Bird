@@ -122,9 +122,9 @@
             y: 210,
             width: 40,
             height: 40,
-            velocity: -1,
-            gravity: 0.25,
-            jumpforce: -5
+            velocity: 0,
+            gravity: 0,
+            jumpforce: 0
         };
 
         const alignBirdToPlayBtn = () => {
@@ -208,9 +208,9 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight * 0.9;
 
-            // Scale gravity and jumpforce based on canvas height
             bird.gravity = canvas.height * 0.0012;
             bird.jumpforce = -canvas.height * 0.025;
+            bird.velocity = 0;
 
             alignBirdToPlayBtn();
             if (!isPlaying && !isGameOver) drawIdle();
