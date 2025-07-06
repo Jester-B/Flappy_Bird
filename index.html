@@ -117,10 +117,6 @@
             }
         };
 
-        const alignBirdToPlayBtn = () => {
-            bird.y = canvas.height / 2 - bird.height / 2;
-        };
-
         let bird = {
             x: 100,
             y: 210,
@@ -129,6 +125,10 @@
             velocity: -1,
             gravity: 0.25,
             jumpforce: -5
+        };
+
+        const alignBirdToPlayBtn = () => {
+            bird.y = canvas.height / 2 - bird.height / 2;
         };
 
         let pipes = [];
@@ -207,6 +207,11 @@
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight * 0.9;
+
+            // Scale gravity and jumpforce based on canvas height
+            bird.gravity = canvas.height * 0.0012;
+            bird.jumpforce = -canvas.height * 0.025;
+
             alignBirdToPlayBtn();
             if (!isPlaying && !isGameOver) drawIdle();
         }
