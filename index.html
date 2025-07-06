@@ -14,21 +14,21 @@
             padding: 0;
             background: black;
             touch-action: none;
-            height: 100vh;
+            height: 100dvh;
             overflow: hidden;
         }
 
         #gameWrapper {
             position: relative;
             width: 100vw;
-            height: 100vh;
+            height: 90dvh;
             overflow: hidden;
         }
 
         #myCanvas {
             display: block;
             width: 100vw;
-            height: 100vh;
+            height: 90dvh;
         }
 
         #playBtn {
@@ -206,7 +206,7 @@
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvas.height = window.innerHeight * 0.9;
             alignBirdToPlayBtn();
         }
 
@@ -322,12 +322,12 @@
             ctx.fillStyle = "rgba(0,0,0,0.5)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "white";
-            ctx.font = "bold 50px Arial";
+            ctx.font = "bold 36px Arial";
             ctx.textAlign = "center";
-            ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
-            ctx.font = "bold 24px Arial";
-            ctx.fillText("Your Score: " + score, canvas.width / 2, canvas.height / 2 + 50);
-            ctx.fillText("Press Space or Tap to restart", canvas.width / 2, canvas.height / 2 + 100);
+            ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 40);
+            ctx.font = "bold 20px Arial";
+            ctx.fillText("Your Score: " + score, canvas.width / 2, canvas.height / 2);
+            ctx.fillText("Press Space or Tap to restart", canvas.width / 2, canvas.height / 2 + 40);
         };
 
         window.addEventListener("load", () => {
