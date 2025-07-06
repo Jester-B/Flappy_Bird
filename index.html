@@ -127,8 +127,8 @@
             width: 40,
             height: 40,
             velocity: -1,
-            gravity: 0.4,
-            jumpforce: -6
+            gravity: 0.5,
+            jumpforce: -8
         };
 
         let pipes = [];
@@ -208,6 +208,7 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight * 0.9;
             alignBirdToPlayBtn();
+            if (!isPlaying && !isGameOver) drawIdle();
         }
 
         window.addEventListener("resize", resizeCanvas);
