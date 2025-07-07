@@ -15,20 +15,27 @@
             background: black;
             touch-action: none;
             height: 100dvh;
+            width: 100vw;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #gameWrapper {
             position: relative;
             width: 100vw;
-            height: 90dvh;
-            overflow: hidden;
+            height: 50vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #myCanvas {
             display: block;
             width: 100vw;
-            height: 90dvh;
+            height: 50vh;
+            background: black;
         }
 
         #playBtn {
@@ -54,31 +61,6 @@
         #playBtn:active {
             transform: translate(-50%, -48%);
             box-shadow: 0 3px #c17900;
-        }
-
-        @media screen and (orientation:portrait) {
-            body::before {
-                content: "Please rotate your device to landscape.";
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: #000;
-                color: white;
-                font-size: 24px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 9999;
-                text-align: center;
-                padding: 20px;
-            }
-
-            canvas,
-            #playBtn {
-                display: none !important;
-            }
         }
     </style>
 </head>
@@ -122,9 +104,9 @@
             y: 210,
             width: 40,
             height: 40,
-            velocity: -1,
-            gravity: 0.5,
-            jumpforce: -8
+            velocity: 0,         // Start at 0 for neutral movement
+            gravity: 0.25,       // Smooth falling (not too fast)
+            jumpforce: -5.5      // A gentle but responsive jump
         };
 
         const alignBirdToPlayBtn = () => {
@@ -133,11 +115,13 @@
 
         let pipes = [];
         let pipeWidth = 50;
-        let pipeGap = 90;
+        let pipeGap = 110;
         let pipeSpeed = 2;
         let pipeSpacing = 160;
         let pipeInterval = 1200;
         let score = 0;
+        let storedScore = localStorage.getItem("highScore");
+        let highScore = storedScore ? parseInt(storedScore) : 0;
 
         document.body.addEventListener("touchstart", (e) => {
             if (e.target.tagName !== "BUTTON") e.preventDefault();
@@ -148,6 +132,8 @@
             isPlaying = true;
             playBtn.style.display = "none";
             gameLoop();
+
+            bird.velocity = bird.jumpforce;
         });
 
         const keyPressed = () => {
@@ -206,11 +192,11 @@
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight * 0.9;
+            canvas.height = window.innerHeight * 0.5;
 
-            bird.gravity = canvas.height * 0.0012;
-            bird.jumpforce = -canvas.height * 0.025;
-            bird.velocity = 0;
+            // bird.gravity = canvas.height * 0.0012;
+            // bird.jumpforce = -canvas.height * 0.025;
+            // bird.velocity = 0;
 
             alignBirdToPlayBtn();
             if (!isPlaying && !isGameOver) drawIdle();
@@ -237,8 +223,13 @@
             ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
             if (isPlaying) {
-                bird.velocity += bird.gravity;
                 bird.y += bird.velocity;
+                bird.velocity += bird.gravity;
+            }
+
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem("highScore", highScore)
             }
 
             ctx.drawImage(birdImage, bird.x, bird.y, bird.width, bird.height);
@@ -325,15 +316,31 @@
             isGameOver = true;
             isPlaying = false;
 
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const titleFontSize = Math.floor(canvas.height * 0.08);  // 8% of canvas height
+            const textFontSize = Math.floor(canvas.height * 0.04);   // 4% of canvas height
+            const lineSpacing = Math.floor(canvas.height * 0.06);    // spacing between lines
+
             ctx.fillStyle = "rgba(0,0,0,0.5)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
             ctx.fillStyle = "white";
-            ctx.font = "bold 36px Arial";
             ctx.textAlign = "center";
-            ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 40);
-            ctx.font = "bold 20px Arial";
-            ctx.fillText("Your Score: " + score, canvas.width / 2, canvas.height / 2);
-            ctx.fillText("Press Space or Tap to restart", canvas.width / 2, canvas.height / 2 + 40);
+
+            // Title
+            ctx.font = `bold ${titleFontSize}px Arial`;
+            ctx.fillText("Game Over", centerX, centerY - lineSpacing * 2);
+
+            // High Score
+            ctx.font = `bold ${textFontSize}px Arial`;
+            ctx.fillText("High Score: " + highScore, centerX, centerY);
+
+            // Your Score
+            ctx.fillText("Your Score: " + score, centerX, centerY + lineSpacing);
+
+            // Hint
+            ctx.fillText("Press Space or Tap to restart", centerX, centerY + lineSpacing * 2.1);
         };
 
         window.addEventListener("load", () => {
