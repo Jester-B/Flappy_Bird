@@ -102,11 +102,11 @@
         let bird = {
             x: 100,
             y: 210,
-            width: 40,
-            height: 40,
-            velocity: 0,         // Start at 0 for neutral movement
-            gravity: 0.25,       // Smooth falling (not too fast)
-            jumpforce: -5.5      // A gentle but responsive jump
+            width: 50,       // Slightly bigger
+            height: 50,      // Slightly bigger
+            velocity: 0,
+            gravity: 0.25,
+            jumpforce: -5.5
         };
 
         const alignBirdToPlayBtn = () => {
@@ -114,11 +114,12 @@
         };
 
         let pipes = [];
-        let pipeWidth = 50;
-        let pipeGap = 110;
+        let pipeWidth = 70;          // Wider pipe
+        let pipeGap = 120;           // Slightly wider opening
         let pipeSpeed = 2;
         let pipeSpacing = 160;
         let pipeInterval = 1200;
+
         let score = 0;
         let storedScore = localStorage.getItem("highScore");
         let highScore = storedScore ? parseInt(storedScore) : 0;
@@ -188,11 +189,11 @@
         let isGameOver = false;
         let isPlaying = false;
 
-        const pipeImageScale = 1.8;
+        const pipeImageScale = 2.4;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight * 0.5;
+            canvas.height = window.innerHeight * 0.4; // Smaller height for mobile feel
 
             // bird.gravity = canvas.height * 0.0012;
             // bird.jumpforce = -canvas.height * 0.025;
