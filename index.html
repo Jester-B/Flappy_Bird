@@ -319,9 +319,6 @@
 
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const titleFontSize = Math.floor(canvas.height * 0.08);  // 8% of canvas height
-            const textFontSize = Math.floor(canvas.height * 0.04);   // 4% of canvas height
-            const lineSpacing = Math.floor(canvas.height * 0.06);    // spacing between lines
 
             ctx.fillStyle = "rgba(0,0,0,0.5)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -330,18 +327,20 @@
             ctx.textAlign = "center";
 
             // Title
-            ctx.font = `bold ${titleFontSize}px Arial`;
-            ctx.fillText("Game Over", centerX, centerY - lineSpacing * 2);
+            ctx.font = "bold 35px Arial";
+            ctx.fillText("Game Over", centerX, centerY  - 40);
 
             // High Score
-            ctx.font = `bold ${textFontSize}px Arial`;
+            ctx.font = "18px Arial";
             ctx.fillText("High Score: " + highScore, centerX, centerY);
 
             // Your Score
-            ctx.fillText("Your Score: " + score, centerX, centerY + lineSpacing);
+            ctx.font = "18px Arial"
+            ctx.fillText("Your Score: " + score, centerX, centerY + 30);
 
             // Hint
-            ctx.fillText("Press Space or Tap to restart", centerX, centerY + lineSpacing * 2.1);
+            ctx.font = "bold 20px Arial"
+            ctx.fillText("Press Space or Tap to restart", centerX, centerY + 80);
         };
 
         window.addEventListener("load", () => {
