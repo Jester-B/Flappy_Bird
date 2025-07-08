@@ -205,7 +205,7 @@
                 // ✅ Add vertical movement when score reaches 20
                 if (pipeCount >= 70) {
                     newPipe.dy = 0.5;
-                    pipeGap = 80;
+                    pipeGap = 70;
                 }
 
                 // ✅ Only push one pipe
@@ -214,7 +214,7 @@
                 pipeCount++;
 
                 if (pipeCount >= 40) {
-                    pipeGap = 100;
+                    pipeGap = 80;
                 }
             }
         }, pipeInterval);
