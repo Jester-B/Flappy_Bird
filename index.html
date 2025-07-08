@@ -12,7 +12,6 @@
         body {
             margin: 0;
             padding: 0;
-            background: black;
             touch-action: none;
             height: 100dvh;
             width: 100vw;
@@ -22,6 +21,20 @@
             align-items: center;
         }
 
+        #blurredBackground {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('./img/background.png');
+            background-size: cover;
+            background-position: center;
+            filter: blur(15px) brightness(0.8);
+            z-index: -1; /* put it behind everything */
+        }
+
+
         #gameWrapper {
             position: relative;
             width: 100vw;
@@ -29,6 +42,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+
         }
 
         #myCanvas {
@@ -66,6 +80,7 @@
 </head>
 
 <body>
+    <div id="blurredBackground"></div>
     <div id="gameWrapper">
         <canvas id="myCanvas"></canvas>
         <button id="playBtn">Play</button>
@@ -115,14 +130,16 @@
 
         let pipes = [];
         let pipeWidth = 70;          // Wider pipe
-        let pipeGap = 120;           // Slightly wider opening
+        let pipeGap = 110;           // Slightly wider opening
         let pipeSpeed = 2;
-        let pipeSpacing = 160;
+        let pipeSpacing = 145;
         let pipeInterval = 1200;
 
         let score = 0;
         let storedScore = localStorage.getItem("highScore");
         let highScore = storedScore ? parseInt(storedScore) : 0;
+
+        let pipeCount = 0;
 
         document.body.addEventListener("touchstart", (e) => {
             if (e.target.tagName !== "BUTTON") e.preventDefault();
@@ -177,14 +194,31 @@
             ) {
                 let topHeight = Math.floor(Math.random() * (canvas.height - pipeGap - 100)) + 50;
 
-                pipes.push({
+                // ✅ Create new pipe first
+                let newPipe = {
                     x: canvas.width,
                     topHeight: topHeight,
                     bottomY: topHeight + pipeGap,
                     passed: false
-                });
+                };
+
+                // ✅ Add vertical movement when score reaches 20
+                if (pipeCount >= 70) {
+                    newPipe.dy = 0.5;
+                    pipeGap = 80;
+                }
+
+                // ✅ Only push one pipe
+                pipes.push(newPipe);
+
+                pipeCount++;
+
+                if (pipeCount >= 40) {
+                    pipeGap = 100;
+                }
             }
         }, pipeInterval);
+
 
         let isGameOver = false;
         let isPlaying = false;
@@ -230,7 +264,7 @@
 
             if (score > highScore) {
                 highScore = score;
-                localStorage.setItem("highScore", highScore)
+                localStorage.setItem("highScore", highScore);
             }
 
             ctx.drawImage(birdImage, bird.x, bird.y, bird.width, bird.height);
@@ -241,6 +275,7 @@
                 ctx.textAlign = "start";
                 ctx.fillText("Score: " + score, 20, 40);
             }
+
 
             if (!isPlaying) {
                 drawIdle();
@@ -269,6 +304,19 @@
                 const pipeLeft = pipe.x;
                 const pipeRight = pipe.x + pipeWidth;
                 const margin = 6;
+
+
+                if (pipe.dy !== undefined) {
+                    pipe.topHeight += pipe.dy;
+                    pipe.bottomY = pipe.topHeight + pipeGap;
+
+                    const minHeight = 50;
+                    const maxHeight = canvas.height - pipeGap - 50;
+
+                    if (pipe.topHeight < minHeight || pipe.topHeight > maxHeight) {
+                        pipe.dy *= -1; // reverse direction (bounce)
+                    }
+                }
 
                 if (
                     birdRight > pipeLeft &&
@@ -328,7 +376,7 @@
 
             // Title
             ctx.font = "bold 35px Arial";
-            ctx.fillText("Game Over", centerX, centerY  - 40);
+            ctx.fillText("Game Over", centerX, centerY - 40);
 
             // High Score
             ctx.font = "18px Arial";
